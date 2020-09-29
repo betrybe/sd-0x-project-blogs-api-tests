@@ -5,7 +5,7 @@ const url = 'http://localhost:3000';
 
 describe('Sua aplicação deve ter o endpoint DELETE `post/:id`', () => {
   beforeEach(() => {
-    shell.exec('npx sequelize-cli db:clear $');
+    shell.exec('npx sequelize-cli db:seed:undo:all $');
     //shell.exec('npx sequelize-cli db:drop');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
     shell.exec('npx sequelize-cli db:seed:all $');
