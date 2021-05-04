@@ -10,7 +10,7 @@ describe('4 - Sua aplicação deve ter o endpoint GET `/user/:id`', () => {
     shell.exec('npx sequelize-cli db:seed:all $');
   });
 
-  it('Será validado que é possível listar um usuario específico com sucesso', async () => {
+  it('Será validado que é possível listar um usuário específico com sucesso', async () => {
     let token;
     await frisby
       .post(`${url}/login`,
@@ -75,7 +75,7 @@ describe('4 - Sua aplicação deve ter o endpoint GET `/user/:id`', () => {
       .then((response) => {
         const { body } = response;
         const result = JSON.parse(body);
-        expect(result.message).toBe('Usuário não existe');
+        expect(result.message).toBe('User does not exist');
       });
   });
 
@@ -93,7 +93,7 @@ describe('4 - Sua aplicação deve ter o endpoint GET `/user/:id`', () => {
       .expect('status', 401)
       .then((responseSales) => {
         const { json } = responseSales;
-        expect(json.message).toBe('Token não encontrado');
+        expect(json.message).toBe('Token not found');
       });
   });
 
@@ -111,7 +111,7 @@ describe('4 - Sua aplicação deve ter o endpoint GET `/user/:id`', () => {
       .expect('status', 401)
       .then((responseSales) => {
         const { json } = responseSales;
-        expect(json.message).toBe('Token expirado ou inválido');
+        expect(json.message).toBe('Expired or invalid token');
       });
   });
 });

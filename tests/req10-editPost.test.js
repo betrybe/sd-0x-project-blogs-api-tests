@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 const url = 'http://localhost:3000';
 
-describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
+describe('10 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
   beforeEach(() => {
     shell.exec('npx sequelize-cli db:drop');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
@@ -37,6 +37,7 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       .put(`${url}/post/1`, {
         title: 'Fórmula 1 editado',
         content: 'O campeão do ano! editado',
+        categoryId: [2]
       })
       .expect('status', 200)
       .then((response) => {
@@ -74,11 +75,12 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       .put(`${url}/post/1`, {
         title: 'Fórmula 1 editado',
         content: 'O campeão do ano! editado',
+        categoryId: [2],
       })
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Usuário não autorizado');
+        expect(json.message).toBe('Unauthorized user');
       });
   });
 
@@ -99,7 +101,7 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token não encontrado');
+        expect(json.message).toBe('Token not found');
       });
   });
 
@@ -120,7 +122,7 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token expirado ou inválido');
+        expect(json.message).toBe('Expired or invalid token');
       });
   });
 
@@ -150,6 +152,7 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       })
       .put(`${url}/post/1`, {
         content: 'O campeão do ano! editado',
+        categoryId: [2]
       })
       .expect('status', 400)
       .then((response) => {
@@ -184,6 +187,7 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       })
       .put(`${url}/post/1`, {
         title: 'Fórmula 1 editado',
+        categoryId: [2]
       })
       .expect('status', 400)
       .then((response) => {
@@ -191,4 +195,5 @@ describe('9 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
         expect(json.message).toBe('"content" is required');
       });
   });
+
 });

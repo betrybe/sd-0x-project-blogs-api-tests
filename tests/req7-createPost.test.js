@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 const url = 'http://localhost:3000';
 
-describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
+describe('7 - Sua aplicação deve ter o endpoint POST `/post`', () => {
   beforeEach(() => {
     shell.exec('npx sequelize-cli db:drop');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
@@ -37,6 +37,7 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
       .post(`${url}/post`, {
         title: 'Fórmula 1',
         content: 'O campeão do ano!',
+        categoryId: [1],
       })
       .expect('status', 201)
       .then((response) => {
@@ -73,6 +74,7 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
       })
       .post(`${url}/post`, {
         content: 'O campeão do ano!',
+        categoryId: [1]
       })
       .expect('status', 400)
       .then((response) => {
@@ -107,11 +109,83 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
       })
       .post(`${url}/post`, {
         title: 'O campeão do ano!',
+        categoryId: [1],
       })
       .expect('status', 400)
       .then((response) => {
         const { json } = response;
         expect(json.message).toBe('"content" is required');
+      });
+  });
+
+  it('Será validado que não é possível cadastrar um blogpost sem o campo `categoryId`', async () => {
+    let token;
+    await frisby
+      .post(`${url}/login`,
+        {
+          email: 'lewishamilton@gmail.com',
+          password: '123456',
+        })
+      .expect('status', 200)
+      .then((response) => {
+        const { body } = response;
+        const result = JSON.parse(body);
+        token = result.token;
+      });
+
+    await frisby
+      .setup({
+        request: {
+          headers: {
+            Authorization: token,
+            'Content-Type': 'application/json',
+          },
+        },
+      })
+      .post(`${url}/post`, {
+        content: 'O campeão do ano!',
+        title: 'Fórmula 1'
+      })
+      .expect('status', 400)
+      .then((response) => {
+        const { json } = response;
+        expect(json.message).toBe('"categoryId" is required');
+      });
+  });
+
+  it('Será validado que não é possível cadastrar um blogpost com uma categoria inexistente', async () => {
+    let token;
+    await frisby
+      .post(`${url}/login`,
+        {
+          email: 'lewishamilton@gmail.com',
+          password: '123456',
+        })
+      .expect('status', 200)
+      .then((response) => {
+        const { body } = response;
+        const result = JSON.parse(body);
+        token = result.token;
+      });
+
+    await frisby
+      .setup({
+        request: {
+          headers: {
+            Authorization: token,
+            'Content-Type': 'application/json',
+          },
+        },
+      })
+      .post(`${url}/post`, {
+        title: "Carros elétricos vão dominar o mundo?",
+        content: "Já é possivel encontrar diversos carros elétricos em todo o mundo, será esse nosso futuro?",
+        categoryId: [3],
+      })
+      .expect('status', 400)
+      .then((response) => {
+        const { json } = response;
+        expect(json.message).toBe('"categoryId" not found');
       });
   });
 
@@ -128,11 +202,12 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
       .post(`${url}/post`, {
         title: 'Fórmula 1',
         content: 'O campeão do ano!',
+        categoryId: [1],
       })
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token não encontrado');
+        expect(json.message).toBe('Token not found');
       });
   });
 
@@ -149,11 +224,13 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
       .post(`${url}/post`, {
         title: 'Fórmula 1',
         content: 'O campeão do ano!',
+        categoryId: [1],
+
       })
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token expirado ou inválido');
+        expect(json.message).toBe('Expired or invalid token');
       });
   });
 });

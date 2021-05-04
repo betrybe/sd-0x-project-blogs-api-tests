@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 const url = 'http://localhost:3000';
 
-describe('10 - Sua aplicação deve ter o endpoint GET `post/search?q=:searchTerm`', () => {
+describe('13 - Sua aplicação deve ter o endpoint GET `post/search?q=:searchTerm`', () => {
   beforeEach(() => {
     shell.exec('npx sequelize-cli db:drop $');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
@@ -193,7 +193,7 @@ describe('10 - Sua aplicação deve ter o endpoint GET `post/search?q=:searchTer
       .then((response) => {
         const { body } = response;
         const result = JSON.parse(body);
-        expect(result.message).toBe('Token não encontrado');
+        expect(result.message).toBe('Token not found');
       });
   });
 
@@ -212,7 +212,7 @@ describe('10 - Sua aplicação deve ter o endpoint GET `post/search?q=:searchTer
       .then((response) => {
         const { body } = response;
         const result = JSON.parse(body);
-        expect(result.message).toBe('Token expirado ou inválido');
+        expect(result.message).toBe('Expired or invalid token');
       });
   });
 });

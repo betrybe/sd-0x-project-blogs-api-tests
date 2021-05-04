@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 const url = 'http://localhost:3000';
 
-describe('5 - Sua aplicação deve ter o endpoint DELETE `/user/me`', () => {
+describe('12 - Sua aplicação deve ter o endpoint DELETE `/user/me`', () => {
   beforeEach(() => {
     shell.exec('npx sequelize-cli db:drop');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
@@ -52,7 +52,7 @@ describe('5 - Sua aplicação deve ter o endpoint DELETE `/user/me`', () => {
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token expirado ou inválido');
+        expect(json.message).toBe('Expired or invalid token');
       });
   });
 
@@ -70,7 +70,7 @@ describe('5 - Sua aplicação deve ter o endpoint DELETE `/user/me`', () => {
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token não encontrado');
+        expect(json.message).toBe('Token not found');
       });
   });
 });
