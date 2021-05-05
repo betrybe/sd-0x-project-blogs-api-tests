@@ -48,6 +48,8 @@ describe('13 - Sua aplicação deve ter o endpoint GET `post/search?q=:searchTer
         expect(result[0].user.displayName).toBe('Lewis Hamilton');
         expect(result[0].user.email).toBe('lewishamilton@gmail.com');
         expect(result[0].user.image).toBe('https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg');
+        expect(result[0].categories[0].id).toBe(2);
+        expect(result[0].categories[0].name).toBe("Escola");
       });
   });
 

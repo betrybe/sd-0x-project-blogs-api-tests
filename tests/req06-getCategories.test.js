@@ -46,4 +46,40 @@ describe('6 - Sua aplicação deve ter o endpoint GET `/categories`', () => {
       });
   });
 
+  it('Será validado que não é possível listar as categorias sem o token', async () => {
+    await frisby
+      .setup({
+        request: {
+          headers: {
+            Authorization: '',
+            'Content-Type': 'application/json',
+          },
+        },
+      })
+      .get(`${url}/categories`)
+      .expect('status', 401)
+      .then((response) => {
+        const { json } = response;
+        expect(json.message).toBe('Token not found');
+      });
+  });
+
+  it('Será validado que não é possível listar as categorias com o token inválido', async () => {
+    await frisby
+      .setup({
+        request: {
+          headers: {
+            Authorization: 'kwngu4425h2',
+            'Content-Type': 'application/json',
+          },
+        },
+      })
+      .get(`${url}/post`)
+      .expect('status', 401)
+      .then((response) => {
+        const { json } = response;
+        expect(json.message).toBe('Expired or invalid token');
+      });
+  });
+
 });

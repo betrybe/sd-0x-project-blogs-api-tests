@@ -37,7 +37,7 @@ describe('10 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       .put(`${url}/post/1`, {
         title: 'Fórmula 1 editado',
         content: 'O campeão do ano! editado',
-        categoryId: [2]
+        categoryIds: [2]
       })
       .expect('status', 200)
       .then((response) => {
@@ -45,6 +45,8 @@ describe('10 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
         expect(json.title).toBe('Fórmula 1 editado');
         expect(json.content).toBe('O campeão do ano! editado');
         expect(json.userId).toBe(1);
+        expect(json.categories[0].id).toBe(1);
+        expect(json.categories[0].name).toBe("Inovação");
       });
   });
 
@@ -75,7 +77,7 @@ describe('10 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       .put(`${url}/post/1`, {
         title: 'Fórmula 1 editado',
         content: 'O campeão do ano! editado',
-        categoryId: [2],
+        categoryIds: [2],
       })
       .expect('status', 401)
       .then((response) => {
@@ -152,7 +154,7 @@ describe('10 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       })
       .put(`${url}/post/1`, {
         content: 'O campeão do ano! editado',
-        categoryId: [2]
+        categoryIds: [2]
       })
       .expect('status', 400)
       .then((response) => {
@@ -187,7 +189,7 @@ describe('10 - Sua aplicação deve ter o endpoint PUT `/post/:id`', () => {
       })
       .put(`${url}/post/1`, {
         title: 'Fórmula 1 editado',
-        categoryId: [2]
+        categoryIds: [2]
       })
       .expect('status', 400)
       .then((response) => {
