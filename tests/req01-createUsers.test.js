@@ -22,7 +22,6 @@ describe('1 - Sua aplicação deve ter o endpoint POST `/user`', () => {
       .then((response) => {
         const { json } = response;
         expect(json.token).not.toBeNull();
-        expect(json.token).not.toBeUndefined();
       });
   });
 
@@ -142,7 +141,7 @@ describe('1 - Sua aplicação deve ter o endpoint POST `/user`', () => {
       .expect('status', 409)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Usuário já existe');
+        expect(json.message).toBe('User already registered');
       });
   });
 });

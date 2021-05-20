@@ -3,14 +3,14 @@ const shell = require('shelljs');
 
 const url = 'http://localhost:3000';
 
-describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
+describe('5 - Sua aplicação deve ter o endpoint POST `/categories`', () => {
   beforeEach(() => {
     shell.exec('npx sequelize-cli db:drop');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
     shell.exec('npx sequelize-cli db:seed:all $');
   });
 
-  it('Será validado que é possível cadastrar um blogpost com sucesso', async () => {
+  it('Será validado que é possivel cadastrar uma categoria com sucesso', async () => {
     let token;
     await frisby
       .post(`${url}/login`,
@@ -34,20 +34,17 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
           },
         },
       })
-      .post(`${url}/post`, {
-        title: 'Fórmula 1',
-        content: 'O campeão do ano!',
+      .post(`${url}/categories`, {
+        name: 'Música'
       })
       .expect('status', 201)
       .then((response) => {
         const { json } = response;
-        expect(json.title).toBe('Fórmula 1');
-        expect(json.content).toBe('O campeão do ano!');
-        expect(json.userId).toBe(1);
+        expect(json.name).toBe('Música');
       });
   });
 
-  it('Será validado que não é possível cadastrar um blogpost sem o campo `title`', async () => {
+  it('Será validado que não é possivel cadastrar uma categoria sem o campo name', async () => {
     let token;
     await frisby
       .post(`${url}/login`,
@@ -71,51 +68,17 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
           },
         },
       })
-      .post(`${url}/post`, {
-        content: 'O campeão do ano!',
+      .post(`${url}/categories`, {
+
       })
       .expect('status', 400)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('"title" is required');
+        expect(json.message).toBe('"name" is required');
       });
   });
 
-  it('Será validado que não é possível cadastrar um blogpost sem o campo `content`', async () => {
-    let token;
-    await frisby
-      .post(`${url}/login`,
-        {
-          email: 'lewishamilton@gmail.com',
-          password: '123456',
-        })
-      .expect('status', 200)
-      .then((response) => {
-        const { body } = response;
-        const result = JSON.parse(body);
-        token = result.token;
-      });
-
-    await frisby
-      .setup({
-        request: {
-          headers: {
-            Authorization: token,
-            'Content-Type': 'application/json',
-          },
-        },
-      })
-      .post(`${url}/post`, {
-        title: 'O campeão do ano!',
-      })
-      .expect('status', 400)
-      .then((response) => {
-        const { json } = response;
-        expect(json.message).toBe('"content" is required');
-      });
-  });
-
-  it('Será validado que não é possível cadastrar um blogpost sem o token', async () => {
+  it('Será validado que não é possível cadastrar uma categoria sem o token', async () => {
     await frisby
       .setup({
         request: {
@@ -125,18 +88,17 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
           },
         },
       })
-      .post(`${url}/post`, {
-        title: 'Fórmula 1',
-        content: 'O campeão do ano!',
+      .post(`${url}/categories`, {
+        name: 'Typescript'
       })
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token não encontrado');
+        expect(json.message).toBe('Token not found');
       });
   });
 
-  it('Será validado que não é possível cadastrar um blogpost com o token inválido', async () => {
+  it('Será validado que não é possível cadastrar uma categoria com o token inválido', async () => {
     await frisby
       .setup({
         request: {
@@ -146,14 +108,13 @@ describe('6 - Sua aplicação deve ter o endpoint POST `/post`', () => {
           },
         },
       })
-      .post(`${url}/post`, {
-        title: 'Fórmula 1',
-        content: 'O campeão do ano!',
+      .post(`${url}/categories`, {
+        name: 'Typescript'
       })
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
-        expect(json.message).toBe('Token expirado ou inválido');
+        expect(json.message).toBe('Expired or invalid token');
       });
   });
-});
+})

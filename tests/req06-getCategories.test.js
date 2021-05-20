@@ -3,14 +3,14 @@ const shell = require('shelljs');
 
 const url = 'http://localhost:3000';
 
-describe('7 - Sua aplicação deve ter o endpoint GET `/post`', () => {
+describe('6 - Sua aplicação deve ter o endpoint GET `/categories`', () => {
   beforeEach(() => {
     shell.exec('npx sequelize-cli db:drop');
     shell.exec('npx sequelize-cli db:create && npx sequelize-cli db:migrate $');
     shell.exec('npx sequelize-cli db:seed:all $');
   });
 
-  it('Será validado que é possível listar blogpost com sucesso', async () => {
+  it('Será validado que é possível listar todas as categorias com sucesso', async () => {
     let token;
     await frisby
       .post(`${url}/login`,
@@ -34,24 +34,19 @@ describe('7 - Sua aplicação deve ter o endpoint GET `/post`', () => {
           },
         },
       })
-      .get(`${url}/post`)
+      .get(`${url}/categories`)
       .expect('status', 200)
       .then((response) => {
         const { body } = response;
         const result = JSON.parse(body);
         expect(result[0].id).toBe(1);
-        expect(result[0].title).toBe('Post do Ano');
-        expect(result[0].content).toBe('Melhor post do ano');
-        expect(result[0].published).toBe('2011-08-01T19:58:00.000Z');
-        expect(result[0].updated).toBe('2011-08-01T19:58:51.000Z');
-        expect(result[0].user.id).toBe(1);
-        expect(result[0].user.displayName).toBe('Lewis Hamilton');
-        expect(result[0].user.email).toBe('lewishamilton@gmail.com');
-        expect(result[0].user.image).toBe('https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg');
+        expect(result[0].name).toBe('Inovação');
+        expect(result[1].id).toBe(2);
+        expect(result[1].name).toBe('Escola');
       });
   });
 
-  it('Será validado que não é possível listar blogpost sem token', async () => {
+  it('Será validado que não é possível listar as categorias sem o token', async () => {
     await frisby
       .setup({
         request: {
@@ -61,21 +56,20 @@ describe('7 - Sua aplicação deve ter o endpoint GET `/post`', () => {
           },
         },
       })
-      .get(`${url}/post`)
+      .get(`${url}/categories`)
       .expect('status', 401)
       .then((response) => {
-        const { body } = response;
-        const result = JSON.parse(body);
-        expect(result.message).toBe('Token não encontrado');
+        const { json } = response;
+        expect(json.message).toBe('Token not found');
       });
   });
 
-  it('Será validado que não é possível listar blogpost com token inválido', async () => {
+  it('Será validado que não é possível listar as categorias com o token inválido', async () => {
     await frisby
       .setup({
         request: {
           headers: {
-            Authorization: 'gakhubde631903',
+            Authorization: 'kwngu4425h2',
             'Content-Type': 'application/json',
           },
         },
@@ -83,9 +77,9 @@ describe('7 - Sua aplicação deve ter o endpoint GET `/post`', () => {
       .get(`${url}/post`)
       .expect('status', 401)
       .then((response) => {
-        const { body } = response;
-        const result = JSON.parse(body);
-        expect(result.message).toBe('Token expirado ou inválido');
+        const { json } = response;
+        expect(json.message).toBe('Expired or invalid token');
       });
   });
+
 });
