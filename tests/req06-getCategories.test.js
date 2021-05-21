@@ -74,7 +74,7 @@ describe('6 - Sua aplicação deve ter o endpoint GET `/categories`', () => {
           },
         },
       })
-      .get(`${url}/post`)
+      .get(`${url}/categories`)
       .expect('status', 401)
       .then((response) => {
         const { json } = response;
